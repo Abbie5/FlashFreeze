@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Ingredient.class)
 public class IngredientMixin {
-    @Inject(method = "test", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "test(Lnet/minecraft/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     private void blockCraftingWithFakeItems(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         if (itemStack.hasNbt() && itemStack.getNbt().contains("OriginalData", NbtElement.COMPOUND_TYPE)) {
             cir.setReturnValue(false);

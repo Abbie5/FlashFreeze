@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -48,7 +47,7 @@ public abstract class ThreadedAnvilChunkStorageMixin {
         }
     }
 
-    @Redirect(method = "method_17227", at = @At(value = "NEW", target = "net/minecraft/world/chunk/WorldChunk"))
+    @Redirect(method = "method_17227", at = @At(value = "NEW", target = "(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/ProtoChunk;Lnet/minecraft/world/chunk/WorldChunk$EntityLoader;)Lnet/minecraft/world/chunk/WorldChunk;"))
     private WorldChunk replaceWithFakeIfNeeded(ServerWorld serverWorld, ProtoChunk protoChunk, WorldChunk.EntityLoader entityLoader) {
         if (protoChunk instanceof FakeProtoChunk)
             return new FakeWorldChunk(serverWorld, protoChunk.getPos(), ((FakeProtoChunk) protoChunk).getUpdatedTag());

@@ -6,7 +6,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
@@ -17,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -46,21 +45,24 @@ public class AbstractComponentContainerMixin {
         }
     }
 
-    @Redirect(method = "fromTag", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"))
-    private void shhhhhhhhhh(Logger instance, String s, Object o1, Object o2) {
+    @Redirect(method = "fromTag", at = @At(value = "INVOKE", target = "Ldev/onyxstudios/cca/internal/base/ComponentsInternals;logDeserializationWarnings(Ljava/util/Collection;)V"))
+    private void shhhhhhhhhh(Collection<String> cause) {
 
     }
 
-    @Inject(method = "fromTag", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
-    private void readUnknownComponents(NbtCompound tag, CallbackInfo ci, NbtCompound componentMap, Iterator<?> someIterator, String missedKeyId) {
-        unknownComponents.put(missedKeyId, componentMap.getCompound(missedKeyId));
+    @Inject(method = "fromTag", at = @At(value = "INVOKE", target = "Ldev/onyxstudios/cca/internal/base/ComponentsInternals;logDeserializationWarnings(Ljava/util/Collection;)V"), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
+    private void readUnknownComponents(NbtCompound tag, CallbackInfo ci, NbtCompound componentMap) {
+        for (String missedKeyId : componentMap.getKeys()) {
+            unknownComponents.put(missedKeyId, componentMap.getCompound(missedKeyId));
+        }
     }
 
     @Inject(method = "toTag", at = @At(value = "RETURN"), remap = false)
     private void addUnknownComponents(NbtCompound tag, CallbackInfoReturnable<NbtCompound> cir) {
         if (unknownComponents.isEmpty()) return;
 
-        if (!tag.contains("cardinal_components", NbtElement.COMPOUND_TYPE)) tag.put("cardinal_components", new NbtCompound());
+        if (!tag.contains("cardinal_components", NbtElement.COMPOUND_TYPE))
+            tag.put("cardinal_components", new NbtCompound());
 
         NbtCompound componentsTag = tag.getCompound("cardinal_components");
         for (Map.Entry<String, NbtCompound> entry : unknownComponents.entrySet()) {
