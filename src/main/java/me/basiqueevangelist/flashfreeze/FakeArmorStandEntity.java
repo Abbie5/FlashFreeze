@@ -66,7 +66,7 @@ public class FakeArmorStandEntity extends ArmorStandEntity {
     @Override
     public boolean damage(DamageSource source, float amount) {
         if (this.world.isClient || this.isRemoved()) return false;
-        if (DamageSource.OUT_OF_WORLD.equals(source)) {
+        if (this.world.getDamageSources().outOfWorld().equals(source)) {
             this.kill();
             return false;
         }

@@ -42,7 +42,7 @@ public class FlashFreezeTestMod implements ModInitializer {
         DefaultBiomeFeatures.addDefaultMushrooms(generationSettings);
         DefaultBiomeFeatures.addBadlandsVegetation(generationSettings);
         return new Biome.Builder()
-            .precipitation(Biome.Precipitation.NONE)
+            .precipitation(false)
             .temperature(2.0F)
             .downfall(0)
             .effects(new BiomeEffects.Builder()
