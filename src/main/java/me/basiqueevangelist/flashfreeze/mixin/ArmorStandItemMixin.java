@@ -16,17 +16,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.function.Consumer;
+
 @Mixin(ArmorStandItem.class)
 public class ArmorStandItemMixin {
-    @Redirect(method = "useOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;create(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/text/Text;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/SpawnReason;ZZ)Lnet/minecraft/entity/Entity;"))
-    private Entity makeEntity(EntityType<?> entityType, ServerWorld world, NbtCompound itemNbt, Text name, PlayerEntity player, BlockPos pos, SpawnReason spawnReason, boolean alignPosition, boolean invertY, ItemUsageContext context) {
-        if (context.getStack().hasNbt() && context.getStack().getNbt().contains("OriginalEntityData", NbtElement.COMPOUND_TYPE)) {
-            Entity e = new FakeArmorStandEntity(world, context.getStack().getNbt().getCompound("OriginalEntityData").copy());
+    @Redirect(method = "useOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;create(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/nbt/NbtCompound;Ljava/util/function/Consumer;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/SpawnReason;ZZ)Lnet/minecraft/entity/Entity;"))
+    private Entity makeEntity(EntityType<?> entityType, ServerWorld world, NbtCompound itemNbt, Consumer afterConsumer, BlockPos pos, SpawnReason spawnReason, boolean alignPosition, boolean invertY) {
+        if (!itemNbt.isEmpty() && itemNbt.contains("OriginalEntityData", NbtElement.COMPOUND_TYPE)) {
+            Entity e = new FakeArmorStandEntity(world, itemNbt.getCompound("OriginalEntityData").copy());
             e.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
             return e;
         }
 
-        return entityType.create(world, itemNbt, name, player, pos, spawnReason, alignPosition, invertY);
+        return entityType.create(world, itemNbt, afterConsumer, pos, spawnReason, alignPosition, invertY);
     }
 
 }

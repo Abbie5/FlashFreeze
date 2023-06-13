@@ -23,6 +23,9 @@
     ],
     "cardinal-components": [
       "me.basiqueevangelist.flashfreeze.testmod.TestModComponents"
+    ],
+    "fabric-datagen": [
+      "me.basiqueevangelist.flashfreeze.testmod.TestModDatagen"
     ]
   },
 
