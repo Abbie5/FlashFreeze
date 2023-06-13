@@ -19,7 +19,7 @@ public class FakeWorldChunk extends WorldChunk implements FakeChunk {
         this.updatedTag = updatedTag;
 
         for (int i = 0; i < world.countVerticalSections(); i++) {
-            ChunkSection section = new ChunkSection(world.sectionIndexToCoord(i), world.getRegistryManager().get(RegistryKeys.BIOME));
+            ChunkSection section = new ChunkSection(world.getRegistryManager().get(RegistryKeys.BIOME));
             for (int x = 0; x < 16; x++)
                 for (int y = 0; y < 16; y++)
                     for (int z = 0; z < 16; z++)

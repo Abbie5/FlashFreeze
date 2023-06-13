@@ -28,7 +28,7 @@ public abstract class ServerWorldMixin extends World {
 
     @Inject(method = "tickEntity", at = @At("HEAD"), cancellable = true)
     private void dontTickInFakeChunks(Entity entity, CallbackInfo ci) {
-        if (FakeChunk.isPosFake(entity.world, entity.getBlockPos()))
+        if (FakeChunk.isPosFake(entity.getWorld(), entity.getBlockPos()))
             ci.cancel();
     }
 

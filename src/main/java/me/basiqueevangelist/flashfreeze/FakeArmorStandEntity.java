@@ -65,8 +65,8 @@ public class FakeArmorStandEntity extends ArmorStandEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (this.world.isClient || this.isRemoved()) return false;
-        if (this.world.getDamageSources().outOfWorld().equals(source)) {
+        if (this.getWorld().isClient || this.isRemoved()) return false;
+        if (this.getWorld().getDamageSources().outOfWorld().equals(source)) {
             this.kill();
             return false;
         }
@@ -79,10 +79,10 @@ public class FakeArmorStandEntity extends ArmorStandEntity {
             droppedStack.getOrCreateNbt().put("OriginalEntityData", newEntityTag);
             droppedStack.getOrCreateNbt().putInt("CustomModelData", 10000);
             droppedStack.setCustomName(Text.of("Unknown entity " + originalData.getString("id")));
-            Block.dropStack(this.world, this.getBlockPos(), droppedStack);
+            Block.dropStack(this.getWorld(), this.getBlockPos(), droppedStack);
         }
-        this.world.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_ARMOR_STAND_BREAK, this.getSoundCategory(), 1.0F, 1.0F);
-        ((ServerWorld)this.world).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, Blocks.OAK_PLANKS.getDefaultState()), this.getX(), this.getBodyY(0.6666666666666666), this.getZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05);
+        this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_ARMOR_STAND_BREAK, this.getSoundCategory(), 1.0F, 1.0F);
+        ((ServerWorld)this.getWorld()).spawnParticles(new BlockStateParticleEffect(ParticleTypes.BLOCK, Blocks.OAK_PLANKS.getDefaultState()), this.getX(), this.getBodyY(0.6666666666666666), this.getZ(), 10, (double)(this.getWidth() / 4.0F), (double)(this.getHeight() / 4.0F), (double)(this.getWidth() / 4.0F), 0.05);
         this.kill();
 
         return true;

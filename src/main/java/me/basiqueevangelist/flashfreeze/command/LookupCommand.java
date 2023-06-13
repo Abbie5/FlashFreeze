@@ -43,11 +43,11 @@ public final class LookupCommand {
         UnknownBlockState unknown = (UnknownBlockState) ((PalettedContainerAccess) section.getBlockStateContainer()).getUnknown(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15);
 
         if (unknown != null) {
-            ctx.getSource().sendFeedback(Text.of("block: " + unknown), false);
+            ctx.getSource().sendFeedback(() -> Text.of("block: " + unknown), false);
 
             return 1;
         } {
-            ctx.getSource().sendFeedback(Text.of("not an unknown block"), false);
+            ctx.getSource().sendFeedback(() -> Text.of("not an unknown block"), false);
 
             return 0;
         }
